@@ -14,3 +14,5 @@ Then remember to change the port you want the server to listen on. If you change
 The client will also have to have an updated **IP** which it is trying to connect to.
 
 If you want to use the server and client over the open network and not locally, then you will have to configer portforwarding on the servers router and firewall.
+
+**Run the server first, then the clients can connect afterwards.**
