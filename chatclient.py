@@ -9,19 +9,19 @@ from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from math import gcd
 
-SERVER_HOST = "127.0.0.1"
+SERVER_HOST = #Change this! THis is where the servers IP goes
 SERVER_PORT = 1111
 BUFFER_SIZE = 1024
 
 class AEShandler:
     def __init__(self):
         self.aes_key = get_random_bytes(16)
-    
+
     def encrypt(self, message):
         cipher = AES.new(self.aes_key, AES.MODE_CTR)
         ciphertext = cipher.encrypt(message.encode("utf-8"))
         return ciphertext, cipher.nonce
-    
+
     def decrypt(self, data, nonce):
         cipher = AES.new(self.aes_key, AES.MODE_CTR, nonce=nonce)
         return cipher.decrypt(data).decode('utf-8')
@@ -236,7 +236,7 @@ class ChatHandler:
                         print("Missing AES handler for decryption.")
                         # Notify only if user is not in chat
                         if self.current_chat != sender:
-                            print(f"\n🔔 New message from {sender}! Type '/chat {sender}' to reply.")
+                            print(f"\n New message from {sender}! Type '/chat {sender}' to reply.")
 
                 elif parsed_data["method"] == "POST":
                     if parsed_data["path"] == "usersview":
@@ -278,8 +278,12 @@ class ChatHandler:
                 elif cmd == "2":
                     print("Users Active right now:")
                     self.request_handler("GET", "active_users")
+                    print("/back")
                     userconnect = input("\nEnter username for private chat: ")
-                    self.send_message(userconnect)
+                    if userconnect == "/back":
+                        continue
+                    else:
+                        self.send_message(userconnect)
                 elif cmd.lower() == "exit":
                     self.s.close()
                     exit()
