@@ -8,8 +8,9 @@ from sympy import primerange
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from math import gcd
+import queue
 
-SERVER_HOST = "62.66.185.241"
+SERVER_HOST = "" #Server IP
 SERVER_PORT = 1111
 BUFFER_SIZE = 1024
 
@@ -101,6 +102,7 @@ class ChatHandler:
         self.current_chat = None
         self.user_typing = False
         self.aes_keys = {}  # Stores AES handler per user
+        self.response_queue = queue.Queue()
 
     def exchange_aes_key(self, recipient_username, recipient_public_key):
         aes_handler = AEShandler()
@@ -129,8 +131,13 @@ class ChatHandler:
 
         data_request = {"method": "GET_PUBLIC_KEY", "to": username}
         self.s.send(json.dumps(data_request).encode("utf-8"))
-        response = json.loads(self.s.recv(BUFFER_SIZE).decode("utf-8"))
-        recipient_public_key = response["publickey"]
+
+        try:
+            response = self.response_queue.get(timeout=5)
+            recipient_public_key = response["publickey"]
+        except queue.Empty:
+            print("Failed to receive public key.")
+            return
 
         self.exchange_aes_key(username, recipient_public_key)
         aes_handler = self.aes_keys[username]
@@ -230,6 +237,9 @@ class ChatHandler:
                                     print(f"- {user}")
                         else:
                             print("No active users available.")
+                
+                elif parsed_data["method"] == "PUBLIC_KEY":
+                    self.response_queue.put(parsed_data)
 
             except (json.JSONDecodeError, ConnectionResetError, socket.timeout):
                 continue
