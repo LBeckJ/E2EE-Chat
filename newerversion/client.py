@@ -217,8 +217,6 @@ class ChatHandler:
                         if sender not in self.messagelog:
                             self.messagelog[sender] = []
                         self.messagelog[sender].append((sender, decrypted_message))
-                        if self.current_chat == sender and not self.user_typing:
-                            self.refresh_private_chat(sender)
                         
                         if self.current_chat == sender:
                             self.refresh_private_chat(sender)
