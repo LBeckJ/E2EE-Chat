@@ -9,7 +9,7 @@ from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from math import gcd
 
-SERVER_HOST = "62.66.185.241" #Change this! THis is where the servers IP goes
+SERVER_HOST = "" #Change this! THis is where the servers IP goes
 SERVER_PORT = 1111
 BUFFER_SIZE = 1024
 
