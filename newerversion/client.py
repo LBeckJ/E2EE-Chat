@@ -219,6 +219,10 @@ class ChatHandler:
                         self.messagelog[sender].append((sender, decrypted_message))
                         if self.current_chat == sender and not self.user_typing:
                             self.refresh_private_chat(sender)
+                        
+                        if self.current_chat == sender:
+                            self.refresh_private_chat(sender)
+
                     else:
                         print(f"\n New message from {sender}, but AES key not available.")
 
