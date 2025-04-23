@@ -39,8 +39,6 @@ def handle_client(conn, addr):
                 "publickey": publickey
             }
 
-        broadcast_active_users()
-
         while True:
             try:
                 raw_data = conn.recv(BUFFER_SIZE)
