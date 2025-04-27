@@ -3,7 +3,7 @@ import threading
 import json
 import time
 
-HOST = "0.0.0.0"
+HOST = "127.0.0.1"
 PORT = 1111
 BUFFER_SIZE = 4096
 
@@ -26,7 +26,7 @@ def broadcast_active_users():
 
 
 def handle_client(conn, addr):
-    print(f"[+] Connection from {addr}")
+    print(f"[+] Connection from {username}: {addr}")
     try:
         handshake_data = conn.recv(BUFFER_SIZE).decode("utf-8")
         handshake = json.loads(handshake_data)
@@ -48,6 +48,8 @@ def handle_client(conn, addr):
                 data = json.loads(raw_data.decode("utf-8"))
                 method = data.get("method")
 
+                print(f"Recived request from {username}: {data}")
+
                 if method == "GET":
                     if data["message"] == "active_users":
                         with clients_lock:
@@ -58,6 +60,7 @@ def handle_client(conn, addr):
                             "users": active
                         }
                         conn.send(json.dumps(response).encode("utf-8"))
+                        print(f"Sent back to client: {response}")
 
                 elif method == "GET_PUBLIC_KEY":
                     to_user = data["to"]
@@ -69,12 +72,14 @@ def handle_client(conn, addr):
                                 "publickey": pubkey
                             }
                             conn.send(json.dumps(response).encode("utf-8"))
+                            print(f"Sent back to client: {response}")
                         else:
                             response = {
                                 "method": "ERROR",
                                 "message": f"User '{to_user}' not found."
                             }
                             conn.send(json.dumps(response).encode("utf-8"))
+                            print(f"Sent back to client: {response}")
 
                 elif method == "KEY_EXCHANGE":
                     to_user = data["to"]
@@ -87,6 +92,7 @@ def handle_client(conn, addr):
                                 "aes_key": data["aes_key"]
                             }
                             recipient_conn.send(json.dumps(forward).encode("utf-8"))
+                            print(f"Fowarded to client: {forward}")
 
                 elif method == "PRIVATE":
                     to_user = data["to"]
@@ -100,22 +106,27 @@ def handle_client(conn, addr):
                                 "nonce": data["nonce"]
                             }
                             recipient_conn.send(json.dumps(forward).encode("utf-8"))
+                            print(f"Fowarded to client: {forward}")
                         else:
                             conn.send(json.dumps({
                                 "method": "ERROR",
                                 "message": "Recipient not found."
                             }).encode("utf-8"))
+                            print("Sent error message to client")
 
                 else:
                     conn.send(json.dumps({
                         "method": "ERROR",
                         "message": "Unknown method."
                     }).encode("utf-8"))
+                    print("Sent error message to client")
 
             except json.JSONDecodeError:
                 conn.send(json.dumps({"method": "ERROR", "message": "Invalid JSON."}).encode("utf-8"))
+                print("Sent error message to client")
             except Exception as e:
                 print(f"[!] Error handling data from {addr}: {e}")
+                print("Sent error message to client")
                 break
 
     except Exception as e:
