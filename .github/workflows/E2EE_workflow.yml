@@ -1,0 +1,8 @@
+name: Script Run
+
+env: 
+  SERVER_IP: ${{ secrets.SERVER_IP }}
+
+run: |
+  pip install -r requirements.txt
+  streamlit run gui/app.py
