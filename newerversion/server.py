@@ -26,7 +26,7 @@ def broadcast_active_users():
 
 
 def handle_client(conn, addr):
-    print(f"[+] Connection from {username}: {addr}")
+    print(f"[+] Connection from: {addr}")
     try:
         handshake_data = conn.recv(BUFFER_SIZE).decode("utf-8")
         handshake = json.loads(handshake_data)
