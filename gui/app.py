@@ -10,7 +10,7 @@ from math import gcd
 import streamlit as st
 
 SERVER_HOST = "localhost"  # Server IP
-SERVER_PORT = 1111
+SERVER_PORT = 4545
 BUFFER_SIZE = 1024
 
 
