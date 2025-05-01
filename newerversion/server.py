@@ -3,8 +3,8 @@ import threading
 import json
 import time
 
-HOST = "127.0.0.1"
-PORT = 1111
+HOST = "localhost"
+PORT = 4545
 BUFFER_SIZE = 4096
 
 clients = {}  # username -> {"socket": socket, "publickey": (e, N)}
