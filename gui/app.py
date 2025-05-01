@@ -9,7 +9,7 @@ from sympy import primerange
 from math import gcd
 import streamlit as st
 
-SERVER_HOST = "localhost"  # Server IP
+SERVER_HOST = "62.66.185.241"  # Server IP
 SERVER_PORT = 1111
 BUFFER_SIZE = 1024
 
